@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser } = require('../controllers/userController');
+const { registerUser, loginUser, updateUser } = require('../controllers/userController');
+const protect = require('../middleware/authMiddleware');
 
-// Ruta para registrar un nuevo usuario
+// Registro
 router.post('/register', registerUser);
+
+// Login
+router.post('/login', loginUser);
+
+// Actualizar perfil (protegido)
+router.put('/update', protect, updateUser);
 
 module.exports = router;
