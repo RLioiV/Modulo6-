@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+dotenv.config();
 const cors = require('cors');
 
-// Cargar variables de entorno
-dotenv.config();
+
 
 // Crear la app
 const app = express();
@@ -20,6 +20,9 @@ app.use('/api/user', userRoutes);
 // Conexión a MongoDB y arranque del servidor
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
+
+
+console.log('MONGO_URI:', process.env.MONGO_URI);
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
