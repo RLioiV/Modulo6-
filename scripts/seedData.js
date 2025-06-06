@@ -1,5 +1,6 @@
 const axios = require('axios');
 
+// Fix: Ensure proper URL format with protocol and host
 const API_BASE = 'http://localhost:5000/api';
 
 const users = [
@@ -29,19 +30,32 @@ const productsByUser = {
   // Registrar usuarios y obtener tokens
   for (const user of users) {
     try {
-      await axios.post(`${API_BASE}/users/register`, user);
-      console.log(`Usuario registrado: ${user.email}`);
+      // Routes now match /api/user/register and /api/user/login
+      const registerResponse = await axios.post(`${API_BASE}/user/register`, user, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(`Usuario registrado: ${user.email}`, registerResponse.data);
     } catch (err) {
-      console.log(`Usuario ya existe: ${user.email}`);
+      console.log(`Usuario ya existe: ${user.email}`, err.response?.data);
     }
 
-    const loginRes = await axios.post(`${API_BASE}/users/login`, {
-      email: user.email,
-      password: user.password,
-    });
+    try {
+      const loginRes = await axios.post(`${API_BASE}/user/login`, {
+        email: user.email,
+        password: user.password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-    tokens[user.email] = loginRes.data.token;
-    console.log(`Login exitoso: ${user.email}`);
+      tokens[user.email] = loginRes.data.token;
+      console.log(`Login exitoso: ${user.email}`);
+    } catch (err) {
+      console.error(`Error en login: ${user.email}`, err.response?.data);
+    }
   }
 
   // Crear productos para cada usuario
@@ -50,14 +64,15 @@ const productsByUser = {
 
     for (const product of products) {
       try {
-        await axios.post(`${API_BASE}/products/create`, product, {
+        // Fix: Update products endpoint
+        await axios.post(`${API_BASE}/product/create`, product, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         console.log(`Producto creado: ${product.name}`);
       } catch (err) {
-        console.error(`Error creando producto: ${product.name}`, err.message);
+        console.error(`Error creando producto: ${product.name}`, err.response?.data || err.message);
       }
     }
   }
