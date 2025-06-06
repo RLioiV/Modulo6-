@@ -1,22 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
-const { protect } = require('../middlewares/authMiddleware');
+const productController = require('../controllers/productController-backup');
+// Comment out the auth middleware for now to isolate the issue
+// const { protect } = require('../middlewares/authMiddleware');
 
-// Ruta para crear un producto (requiere autenticación)
-router.post('/create', protect, productController.createProduct);
-
-// Obtener todos los productos del usuario autenticado
-router.get('/readall', protect, productController.getAllProducts);
-
-// Obtener un producto por ID (solo si pertenece al usuario autenticado)
-router.get('/readone/:id', protect, productController.getProductById);
-
-// Actualizar un producto por ID (solo si pertenece al usuario autenticado)
-router.put('/update/:id', protect, productController.updateProduct);
-
-// Eliminar un producto por ID (solo si pertenece al usuario autenticado)
-router.delete('/delete/:id', protect, productController.deleteProduct);
+// Remove protect middleware temporarily
+router.post('/create', productController.createProduct);
+router.get('/readall', productController.getAllProducts);
+router.get('/readone/:id', productController.getProductById);
+router.put('/update/:id', productController.updateProduct);
+router.delete('/delete/:id', productController.deleteProduct);
 
 module.exports = router;
-
