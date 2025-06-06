@@ -1,6 +1,5 @@
 const axios = require('axios');
 
-// Fix: Ensure proper URL format with protocol and host
 const API_BASE = 'http://localhost:5000/api';
 
 const users = [
@@ -27,7 +26,6 @@ const productsByUser = {
 (async () => {
   const tokens = {};
 
-  // Registrar usuarios y obtener tokens
   for (const user of users) {
     try {
       // Routes now match /api/user/register and /api/user/login
@@ -58,13 +56,12 @@ const productsByUser = {
     }
   }
 
-  // Crear productos para cada usuario
   for (const [email, products] of Object.entries(productsByUser)) {
     const token = tokens[email];
 
     for (const product of products) {
       try {
-        // Fix: Update products endpoint
+       
         await axios.post(`${API_BASE}/product/create`, product, {
           headers: {
             Authorization: `Bearer ${token}`,

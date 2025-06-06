@@ -42,14 +42,18 @@ const generateToken = require('../utils/generateToken');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
- *     responses:
- *       201:
- *         description: Usuario registrado correctamente
- *       400:
- *         description: Error en los datos proporcionados
- *       500:
- *         description: Error del servidor
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  */
 const registerUser = async (req, res) => {
   try {

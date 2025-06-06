@@ -159,7 +159,7 @@ const options = {
       }
     }
   },
-  apis: [], // Remove the problematic file scanning
+  apis: [], 
 };
 
 const swaggerSpec = swaggerJSDoc(options);
