@@ -94,8 +94,30 @@ const updateUser = async (req, res) => {
   }
 };
 
+// Verificar token y devolver datos del usuario autenticado
+const verifyToken = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Token inválido o no proporcionado' });
+    }
+
+    res.status(200).json({
+      message: 'Token válido',
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al verificar el token' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
-  updateUser
+  updateUser,
+  verifyToken
 };
