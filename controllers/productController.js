@@ -1,8 +1,65 @@
 const Product = require('../models/productModel');
 
-// @desc    Crear un nuevo producto
-// @route   POST /api/product/create
-// @access  Privado
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       required:
+ *         - name
+ *         - price
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: ID único del producto
+ *         name:
+ *           type: string
+ *           description: Nombre del producto
+ *         description:
+ *           type: string
+ *           description: Descripción del producto
+ *         price:
+ *           type: number
+ *           description: Precio del producto
+ *         user:
+ *           type: string
+ *           description: ID del usuario propietario
+ *       example:
+ *         name: Laptop HP
+ *         description: Laptop para programación
+ *         price: 1500
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /api/product/create:
+ *   post:
+ *     summary: Crear un nuevo producto
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *     responses:
+ *       201:
+ *         description: Producto creado correctamente
+ *       400:
+ *         description: Datos faltantes o inválidos
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
 const createProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
@@ -29,9 +86,28 @@ const createProduct = async (req, res) => {
   }
 };
 
-// @desc    Obtener todos los productos del usuario
-// @route   GET /api/products/readall
-// @access  Privado
+/**
+ * @swagger
+ * /api/product/readall:
+ *   get:
+ *     summary: Obtener todos los productos del usuario autenticado
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de productos del usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({ user: req.user._id });
@@ -42,9 +118,35 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-// @desc    Obtener un producto por ID
-// @route   GET /api/products/readone/:id
-// @access  Privado
+/**
+ * @swagger
+ * /api/product/readone/{id}:
+ *   get:
+ *     summary: Obtener un producto por ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del producto
+ *     responses:
+ *       200:
+ *         description: Producto encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Producto no encontrado
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findOne({
@@ -63,9 +165,48 @@ const getProductById = async (req, res) => {
   }
 };
 
-// @desc    Actualizar un producto
-// @route   PUT /api/products/update/:id
-// @access  Privado
+/**
+ * @swagger
+ * /api/product/update/{id}:
+ *   put:
+ *     summary: Actualizar un producto por ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del producto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *             example:
+ *               name: Laptop HP Actualizada
+ *               description: Nueva descripción
+ *               price: 1600
+ *     responses:
+ *       200:
+ *         description: Producto actualizado correctamente
+ *       404:
+ *         description: Producto no encontrado
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
 const updateProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
@@ -92,9 +233,31 @@ const updateProduct = async (req, res) => {
   }
 };
 
-// @desc    Eliminar un producto
-// @route   DELETE /api/products/delete/:id
-// @access  Privado
+/**
+ * @swagger
+ * /api/product/delete/{id}:
+ *   delete:
+ *     summary: Eliminar un producto por ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del producto
+ *     responses:
+ *       200:
+ *         description: Producto eliminado correctamente
+ *       404:
+ *         description: Producto no encontrado
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error del servidor
+ */
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findOne({

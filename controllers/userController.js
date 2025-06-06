@@ -2,7 +2,55 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken');
 
-// Registrar usuario
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: ID único del usuario
+ *         name:
+ *           type: string
+ *           description: Nombre del usuario
+ *         email:
+ *           type: string
+ *           description: Email del usuario
+ *         password:
+ *           type: string
+ *           description: Contraseña del usuario
+ *       example:
+ *         name: Juan Pérez
+ *         email: juan@example.com
+ *         password: mipassword123
+ */
+
+/**
+ * @swagger
+ * /api/user/register:
+ *   post:
+ *     summary: Registrar un nuevo usuario
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: Usuario registrado correctamente
+ *       400:
+ *         description: Error en los datos proporcionados
+ *       500:
+ *         description: Error del servidor
+ */
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -25,7 +73,46 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Iniciar sesión
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     summary: Iniciar sesión
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             example:
+ *               email: juan@example.com
+ *               password: mipassword123
+ *     responses:
+ *       200:
+ *         description: Inicio de sesión exitoso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *       401:
+ *         description: Credenciales inválidas
+ */
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -60,7 +147,38 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Actualizar usuario
+/**
+ * @swagger
+ * /api/user/update:
+ *   put:
+ *     summary: Actualizar usuario autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             example:
+ *               name: Juan Pérez Actualizado
+ *               email: juan.nuevo@example.com
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado correctamente
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Usuario no encontrado
+ */
 const updateUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -94,7 +212,29 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Verificar token y devolver datos del usuario autenticado
+/**
+ * @swagger
+ * /api/user/verifytoken:
+ *   get:
+ *     summary: Verificar token y obtener datos del usuario
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token válido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *       401:
+ *         description: Token inválido
+ */
 const verifyToken = async (req, res) => {
   try {
     if (!req.user) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { registerUser, loginUser, updateUser, verifyToken } = require('../controllers/userController');
-const protect = require('../middlewares/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware'); // ✅ Fixed this line
 
 // Rutas con /user como prefijo
 router.post('/register', registerUser);

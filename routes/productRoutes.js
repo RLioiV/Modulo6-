@@ -20,4 +20,3 @@ router.delete('/delete/:id', protect, productController.deleteProduct);
 
 module.exports = router;
 
-app.use('/api/products', require('./routes/productRoutes'));
